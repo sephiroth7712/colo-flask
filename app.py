@@ -208,7 +208,7 @@ def _create_or_edit(entry, template):
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            entry.image = url_for('uploaded_file', filename=filename))
+            entry.image = url_for('uploaded_file', filename=filename)
         entry.title = request.form.get('title') or ''
         entry.content = request.form.get('content') or ''
         entry.tags = request.form.get('tags') or ''
