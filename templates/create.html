@@ -2,7 +2,7 @@
 <div class="blog py-4">
   <h3 class="section-title text-center m-5">New Event</h3>
   <div class="container">
-    <form action="{% block form_action %}{{ url_for('create') }}{% endblock %}" class="form-horizontal" method="post">
+    <form action="{% block form_action %}{{ url_for('create') }}{% endblock %}" class="form-horizontal" method="post" enctype="multipart/form-data">
       <label for="title" class="col-sm-2 control-label">Title</label>
       <input class="form-control" id="title" name="title" type="text" placeholder="Your Awesome Event" value="{{ entry.title }}">
 

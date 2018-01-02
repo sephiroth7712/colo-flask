@@ -3,6 +3,7 @@ import functools
 import os
 import re
 import urllib
+import time
 
 from flask import (Flask, flash, Markup, redirect, render_template, request,
                    Response, session, url_for)
@@ -39,7 +40,7 @@ SECRET_KEY = 'shhh, secret!'
 # This is used by micawber, which will attempt to generate rich media
 # embedded objects with maxwidth=800.
 SITE_WIDTH = 800
-UPLOAD_FOLDER = '/images/'
+UPLOAD_FOLDER = 'static/images/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 # Create a Flask WSGI app and configure it using values from the module.
@@ -190,25 +191,9 @@ def events():
         query,
         check_bounds=False)
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def _create_or_edit(entry, template):
     if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(url_for('edit', slug=entry.slug))
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(url_for('edit', slug=entry.slug))
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            entry.image = url_for('uploaded_file', filename=filename)
         entry.title = request.form.get('title') or ''
         entry.content = request.form.get('content') or ''
         entry.tags = request.form.get('tags') or ''
@@ -219,6 +204,13 @@ def _create_or_edit(entry, template):
         entry.time = request.form.get('time') or ''
         entry.contact = request.form.get('contact') or ''
         entry.fee = request.form.get('Fee') or ''
+        # Uploading Files
+        file = request.files['image']
+        filename = secure_filename(file.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename + str(time.time())[4:10])
+        file.save(image_path)
+        entry.image = image_path
+
         if not (entry.title and entry.content):
             flash('Title and Content are required.', 'danger')
         else:
