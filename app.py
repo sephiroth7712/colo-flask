@@ -14,9 +14,12 @@ from micawber.cache import Cache as OEmbedCache
 from peewee import *
 from playhouse.flask_utils import FlaskDB, get_object_or_404, object_list
 from playhouse.sqlite_ext import *
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 
 # Blog configuration values.
+
+
 
 # You may consider using a one-way hash to generate the password, and then
 # use the hash again in the login view to perform the comparison. This is just
@@ -36,11 +39,9 @@ SECRET_KEY = 'shhh, secret!'
 # embedded objects with maxwidth=800.
 SITE_WIDTH = 800
 
-
 # Create a Flask WSGI app and configure it using values from the module.
 app = Flask(__name__)
 app.config.from_object(__name__)
-
 # FlaskDB is a wrapper for a peewee database that sets up pre/post-request
 # hooks for managing database connections.
 flask_db = FlaskDB(app)
@@ -194,7 +195,7 @@ def _create_or_edit(entry, template):
         entry.date = request.form.get('date') or ''
         entry.time = request.form.get('time') or ''
         entry.contact = request.form.get('contact') or ''
-        fee = TextField()
+        entry.fee = request.form.get('Fee') or ''
         if not (entry.title and entry.content):
             flash('Title and Content are required.', 'danger')
         else:
