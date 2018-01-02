@@ -15,6 +15,7 @@ from peewee import *
 from playhouse.flask_utils import FlaskDB, get_object_or_404, object_list
 from playhouse.sqlite_ext import *
 from flask_uploads import UploadSet, configure_uploads, IMAGES
+from werkzeug.utils import secure_filename
 
 
 # Blog configuration values.
@@ -38,10 +39,14 @@ SECRET_KEY = 'shhh, secret!'
 # This is used by micawber, which will attempt to generate rich media
 # embedded objects with maxwidth=800.
 SITE_WIDTH = 800
+UPLOAD_FOLDER = '/images/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 # Create a Flask WSGI app and configure it using values from the module.
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # FlaskDB is a wrapper for a peewee database that sets up pre/post-request
 # hooks for managing database connections.
 flask_db = FlaskDB(app)
@@ -184,8 +189,25 @@ def events():
         query,
         check_bounds=False)
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def _create_or_edit(entry, template):
     if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(url_for('edit', slug=entry.slug))
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(url_for('edit', slug=entry.slug))
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            entry.image = url_for('uploaded_file', filename=filename))
         entry.title = request.form.get('title') or ''
         entry.content = request.form.get('content') or ''
         entry.tags = request.form.get('tags') or ''
@@ -219,15 +241,6 @@ def _create_or_edit(entry, template):
 @login_required
 def create():
     return _create_or_edit(Entry(title='', content=''), 'create.html')
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST':
-        file = request.files['file']
-        extension = os.path.splitext(file.filename)[1]
-        f_name = str(uuid.uuid4()) + extension
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], f_name))
-    return json.dumps({'filename':f_name})
 
 @app.route('/drafts/')
 @login_required
