@@ -73,6 +73,7 @@ class Entry(flask_db.Model):
     time = TextField()
     contact = TextField()
     fee = TextField()
+    image = TextField()
     timestamp = DateTimeField(default=datetime.datetime.now, index=True)
     @property
     def html_content(self):
