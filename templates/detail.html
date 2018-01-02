@@ -1,0 +1,119 @@
+{% extends "base2.html" %}
+
+{% block extra_header %}
+  {% if session.logged_in %}
+    <li class="nav-item"><a class="nav-link" href="{{ url_for('edit', slug=entry.slug) }}">Edit entry</a></li>
+  {% endif %}
+{% endblock %}
+
+{% block extra_style %}
+    .header {
+        background: url("{{ url_for('static', filename='images/common/card-1.jpg')}}");
+        -webkit-clip-path: polygon(0 0, 100% 0, 100% 87%, 0 100%);
+        clip-path: polygon(0 0, 100% 0, 100% 87%, 0 100%);
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+{% endblock %}
+{% block content %}
+</div>
+    <div class="container custom-content-card">
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mt-5">{{ entry.title }}</h1>
+                        <div class="text-center">
+                            {% for tag in entry.tags.split(",") %}
+                            <span class="badge badge-outline-secondary">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        <p class="card-text mt-5">
+                              {{ entry.html_content }}
+                        </p>
+
+                        <div class="testimonials">
+                            <h3 class="section-title text-center m-5">On the Panel</h3>
+                            <div class="container py-5">
+                                <div class="row">
+                                    <div class="col-md-4 testimonial text-center">
+                                        <div class="avatar rounded-circle with-shadows mb-3 ml-auto mr-auto">
+                                            <img src="images/common/avatar-1.jpeg" class="w-100" alt="Testimonial Avatar" />
+                                        </div>
+                                        <h5 class="mb-1">Osbourne Tranter</h5>
+                                        <span class="text-muted d-block mb-2">CEO at Megacorp</span>
+                                        <p>Vivamus quis ex mattis, gravida erat a, iaculis urna. Proin ac eleifend tortor. Nunc
+                                            in augue eget enim venenatis viverra.</p>
+                                    </div>
+
+                                    <div class="col-md-4 testimonial text-center">
+                                        <div class="avatar rounded-circle with-shadows mb-3 ml-auto mr-auto">
+                                            <img src="images/common/avatar-2.jpeg" class="w-100" alt="Testimonial Avatar" />
+                                        </div>
+                                        <h5 class="mb-1">Darrin Ollie</h5>
+                                        <span class="text-muted d-block mb-2">CEO at Megacorp</span>
+                                        <p>Nullam eu ligula facilisis, commodo velit non, vulputate dolor. Aenean congue euismod
+                                            vestibulum.
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-4 testimonial text-center">
+                                        <div class="avatar rounded-circle with-shadows mb-3 ml-auto mr-auto">
+                                            <img src="images/common/avatar-3.jpeg" class="w-100" alt="Testimonial Avatar" />
+                                        </div>
+                                        <h5 class="mb-1">Quinton Bruce</h5>
+                                        <span class="text-muted d-block mb-2">CEO at Megacorp</span>
+                                        <p> Aenean imperdiet ultrices tortor id convallis. Donec id metus magna. Morbi pretium
+                                            odio faucibus blandit gravida.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonials">
+                            <h3 class="section-title text-center m-5">Details</h3>
+                            <div class="container py-5">
+                                <div class="row">
+                                    <div class="feature py-4 col-md-6 d-flex">
+                                        <div class="icon text-primary mr-3"><i class="fa fa-calendar"></i></div>
+                                        <div class="px-4">
+                                            <h5>Date</h5>
+                                            <p>27th Februrary, 2016<br> 3:00PM onwards</p>
+                                        </div>
+                                    </div>
+                                    <div class="feature py-4 col-md-6 d-flex">
+                                        <div class="icon text-primary mr-3"><i class="fa fa-money"></i></div>
+                                        <div class="px-4">
+                                            <h5>Registration Details</h5>
+                                            <p>Registration to be done before 20th Feb.<br> Registration Fee: &#x20B9;150</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="feature py-4 col-md-6 d-flex">
+                                        <div class="icon text-primary mr-3"><i class="fa fa-address-card"></i></div>
+                                        <div class="px-4">
+                                            <h5>Contact</h5>
+                                            <p>nabeel@colosseumfest.com</p>
+                                        </div>
+                                    </div>
+                                    <div class="feature py-4 col-md-6 d-flex">
+                                        <div class="icon text-primary mr-3"><i class="fa fa-map-marker"></i></div>
+                                        <div class="px-4">
+                                            <h5>Don Bosco Institute of Technology</h5>
+                                            <p>Premier Automobiles Road, Near Vidyavihar Railway Station, Kurla (w), Mumbai,
+                                                Maharashtra 400070.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- / Welcome Section -->
+{% endblock %}

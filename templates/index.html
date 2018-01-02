@@ -1,0 +1,70 @@
+{% extends "base.html" %} {% block title %}Blog entries{% endblock %} {% block content_title %}{% if search %}Search "{{
+  search }}"{% else %}Blog entries{% endif %}{% endblock %} {% block content %}
+  <!-- / Welcome Section -->
+  <div class="welcome d-flex justify-content-center">
+      <div class="inner-wrapper mb-auto logo-container">
+          <img src="{{ url_for('static', filename='images/globe.png')}}">
+      </div>
+  </div>
+
+  <div class="blog py-4">
+      <h3 class="section-title text-center m-5">Highlights</h3>
+      <div class="container">
+          <div class="py-4">
+              <div class="row">
+                  <div class="card-deck">
+                      {% for entry in object_list %}
+                      {% if entry.is_highlight %}
+                      <div class="col-md-12 col-lg-4">
+                          <div class="custom-card custom-card-height card mb-4">
+                              <img class="card-img-top" src="{{ url_for('static', filename='images/common/card-1.jpg')}}" alt="Card image cap">
+                              <div class="card-body">
+                                  <h4 class="card-title">{{ entry.title }}</h4>
+                                  <p class="card-text">{{ entry.html_content[0:100]}}...
+                                  </p>
+                                  <a class="btn btn-primary btn-pill" href="{{ url_for('detail', slug=entry.slug) }}">Read More &rarr;</a>
+                              </div>
+                          </div>
+                      </div>
+                      {% endif %}
+                      {% endfor %}
+                  </div>
+                  <a class="btn btn-lg btn-secondary btn-pill ml-auto mr-auto mt-5" href="#">View All Events</a>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- / Our Blog Section -->
+
+  <div id="Sponsors" class="py-4">
+      <h3 class="section-title text-center m-5">Our Sponsors</h3>
+      <div class="container">
+          <div class="py-4">
+              <div class="row">
+                  <div class="card-deck">
+                      <div class="col-md-6 col-lg-3" style="text-align:center;">
+                          <div class="custom-card card mb-4">
+                              <img class="card-img" src="{{ url_for('static', filename='images/sponsor/cobalt.jpg')}}" alt="Cobalt AI Logo">
+                          </div>
+                      </div>
+                      <div class="col-md-6 col-lg-3" style="text-align:center;">
+                          <div class="custom-card card mb-4">
+                              <img class="card-img" src="{{ url_for('static', filename='images/sponsor/zebronics.jpg')}}" alt="Zebronics Logo">
+                          </div>
+                      </div>
+                      <div class="col-md-6 col-lg-3" style="text-align:center;">
+                          <div class="custom-card card mb-4">
+                              <img class="card-img" src="{{ url_for('static', filename='images/sponsor/spykar.jpg')}}" alt="Spykar Logo">
+                          </div>
+                      </div>
+                      <div class="col-md-6 col-lg-3" style="text-align:center;">
+                          <div class="custom-card card mb-4">
+                              <img class="card-img" src="{{ url_for('static', filename='images/sponsor/topntown.jpg')}}" alt="Top N Town Logo">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  {% endblock %}
