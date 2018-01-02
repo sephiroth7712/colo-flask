@@ -17,10 +17,10 @@
                       {% if entry.is_highlight %}
                       <div class="col-md-12 col-lg-4">
                           <div class="custom-card custom-card-height card mb-4">
-                              <img class="card-img-top" src="{{ url_for('static', filename='images/common/card-1.jpg')}}" alt="Card image cap">
+                              <img class="card-img-top" src="/{{ entry.image }}" alt="Card image cap">
                               <div class="card-body">
                                   <h4 class="card-title">{{ entry.title }}</h4>
-                                  <p class="card-text">{{ entry.html_content[0:100]}}...
+                                  <p class="card-text">{{ entry.html_content[0:90]}}...
                                   </p>
                                   <a class="btn btn-primary btn-pill" href="{{ url_for('detail', slug=entry.slug) }}">Read More &rarr;</a>
                               </div>

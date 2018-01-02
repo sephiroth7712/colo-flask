@@ -8,7 +8,7 @@
 
 {% block extra_style %}
     .header {
-        background: url("{{ url_for('static', filename='images/common/card-1.jpg')}}");
+        background: url("/{{ entry.image }}");
         -webkit-clip-path: polygon(0 0, 100% 0, 100% 87%, 0 100%);
         clip-path: polygon(0 0, 100% 0, 100% 87%, 0 100%);
         background-attachment: fixed;
@@ -78,14 +78,14 @@
                                         <div class="icon text-primary mr-3"><i class="fa fa-calendar"></i></div>
                                         <div class="px-4">
                                             <h5>Date</h5>
-                                            <p>27th Februrary, 2016<br> 3:00PM onwards</p>
+                                            <p>{{ entry.date }}<br> {{ entry.time }} onwards</p>
                                         </div>
                                     </div>
                                     <div class="feature py-4 col-md-6 d-flex">
                                         <div class="icon text-primary mr-3"><i class="fa fa-money"></i></div>
                                         <div class="px-4">
                                             <h5>Registration Details</h5>
-                                            <p>Registration to be done before 20th Feb.<br> Registration Fee: &#x20B9;150</p>
+                                            <p>Registration to be done before 20th Feb.<br> Registration Fee: &#x20B9;{{ entry.fee }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -95,7 +95,7 @@
                                         <div class="icon text-primary mr-3"><i class="fa fa-address-card"></i></div>
                                         <div class="px-4">
                                             <h5>Contact</h5>
-                                            <p>nabeel@colosseumfest.com</p>
+                                            <p>{{ entry.contact}}</p>
                                         </div>
                                     </div>
                                     <div class="feature py-4 col-md-6 d-flex">

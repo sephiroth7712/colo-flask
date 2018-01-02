@@ -207,7 +207,7 @@ def _create_or_edit(entry, template):
         # Uploading Files
         file = request.files['image']
         filename = secure_filename(file.filename)
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename + str(time.time())[4:10])
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], str(time.time())[4:10] + filename)
         file.save(image_path)
         entry.image = image_path
 
