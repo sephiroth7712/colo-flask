@@ -62,8 +62,12 @@ class Entry(flask_db.Model):
     tags = TextField()
     published = BooleanField(index=True)
     is_highlight = BooleanField(index=True)
+    category = TextField()
+    date = TextField()
+    time = TextField()
+    contact = TextField()
+    fee = TextField()
     timestamp = DateTimeField(default=datetime.datetime.now, index=True)
-
     @property
     def html_content(self):
         """
@@ -186,6 +190,11 @@ def _create_or_edit(entry, template):
         entry.tags = request.form.get('tags') or ''
         entry.is_highlight = request.form.get('is_highlight') or False
         entry.published = request.form.get('published') or False
+        entry.category = request.form.get('category') or ''
+        entry.date = request.form.get('date') or ''
+        entry.time = request.form.get('time') or ''
+        entry.contact = request.form.get('contact') or ''
+        fee = TextField()
         if not (entry.title and entry.content):
             flash('Title and Content are required.', 'danger')
         else:

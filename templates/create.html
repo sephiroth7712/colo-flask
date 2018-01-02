@@ -1,52 +1,67 @@
-{% extends "base2.html" %}
-
-{% block title %}Create entry{% endblock %}
-
-{% block content_title %}Create entry{% endblock %}
-
-{% block content %}
-  <form action="{% block form_action %}{{ url_for('create') }}{% endblock %}" class="form-horizontal" method="post">
-    <div class="form-control">
+{% extends "base.html" %} {% block content %}
+<div class="blog py-4">
+  <h3 class="section-title text-center m-5">New Event</h3>
+  <div class="container">
+    <form action="{% block form_action %}{{ url_for('create') }}{% endblock %}" class="form-horizontal" method="post">
       <label for="title" class="col-sm-2 control-label">Title</label>
-      <div class="col-sm-10">
-        <input class="form-control" id="title" name="title" type="text" value="{{ entry.title }}">
-      </div>
-    </div>
-    <div class="form-control">
-      <label for="Content" class="col-sm-2 control-label">Content</label>
-      <div class="col-sm-10">
-        <textarea class="form-control" id="content" name="content" style="height: 300px;">{{ entry.content }}</textarea>
-      </div>
-    </div>
-    <div class="form-control">
-      <label for="tags" class="col-sm-2 control-label">tags</label>
-      <div class="col-sm-10">
-          <input class="form-control" id="tags" name="tags" type="text" value="{{ entry.tags }}">
-      </div>
-    </div>
-    <div class="form-control">
-      <div class="col-sm-offset-2 col-sm-10">
-        <div class="checkbox">
-          <label>
-            <input name="published" type="checkbox" value="y"{% if entry.published %} checked="checked"{% endif %}> Published?
-          </label>
+      <input class="form-control" id="title" name="title" type="text" placeholder="Your Awesome Event"  value="{{ entry.title }}">
+
+      <label for="Content" class="mt-3 col-sm-2 control-label">Content</label>
+      <textarea class="form-control" id="content" name="content" style="height: 300px;">{{ entry.content }}</textarea>
+
+      <label for="tags" class="mt-3 col-sm-2 control-label">Tags</label>
+      <input class="form-control" id="tags" name="tags" type="text" placeholder="AI, Debate, Tensorflow" value="{% if entry.tags %}{{ entry.tags }}{% endif %}">
+
+      <label for="contact" class="mt-3 col-sm-2 control-label">Contact</label>
+      <input class="form-control" id="contact" name="contact" type="text" placeholder="someone@colosseumfest.com" value="{% if entry.contact %}{{ entry.contact }}{% endif %}">
+
+
+      <div class="row mt-3">
+        <div class="col-md-6">
+            <label for="date" class="mt-3 col-sm-2 control-label">Date</label>
+            <input class="form-control" id="date" name="date" type="text" placeholder="27th, February 2018" value="{% if entry.date %}{{ entry.date }}{% endif %}">
+
+            <label for="date" class="mt-3 col-sm-2 control-label">Time</label>
+            <input class="form-control" id="time" name="time" type="text" placeholder="3:00PM" value="{% if entry.time %}{{ entry.time }}{% endif %}">
+        </div>
+        <div class="col-md-6">
+            <label for="date" class="mt-3 col-sm-2 control-label">Category</label>
+                <select class="custom-select d-block col-md-3" id="Category" required>
+                    <option value="" hidden>Choose One</option>
+                    <option value="Talk">Talk</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Competition">Competition</option>
+                    <option value="Exhibition">Exhibition</option>
+                    <option value="Games">Games</option>
+                </select>
+
+            <label for="date" class="mt-3 col-sm-2 control-label">Fee</label>
+            <input class="form-control" id="fee" name="fee" type="text" placeholder="150" value="{% if entry.date %}{{ entry.date }}{% endif %}">
         </div>
       </div>
-    </div>
-    <div class="form-control">
-      <div class="col-sm-offset-2 col-sm-10">
-        <div class="checkbox">
-          <label>
-            <input name="is_highlight" type="checkbox" value="y"{% if entry.is_highlight %} checked="checked"{% endif %}> Is it a highlight?
-          </label>
+
+      <div class="mt-3 checkbox">
+        <label>
+          <input name="published" type="checkbox" value="y" {% if entry.published %} checked="checked" {% endif %}> Published?
+        </label>
+      </div>
+
+      <div class="checkbox">
+        <label>
+          <input name="is_highlight" type="checkbox" value="y" {% if entry.is_highlight %} checked="checked" {% endif %}> Is it a highlight?
+        </label>
+      </div>
+
+      <div>
+        <div class="mt-5 col-sm-offset-2 col-sm-10 col-lg-12">
+          <button class="btn btn-primary btn-pill" type="submit">{% block save_button %}Create{% endblock %}</button>
+          <a class="btn btn btn-secondary btn-pill" href="{{ url_for('index') }}">Cancel</a>
         </div>
       </div>
-    </div>
-    <div class="form-control">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button class="btn btn-primary btn-pill" type="submit">{% block save_button %}Create{% endblock %}</button>
-        <a class="btn btn btn-secondary btn-pill" href="{{ url_for('index') }}">Cancel</a>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
+</div>
+<script>
+    $('#datepicker-example').datepicker();
+</script>
 {% endblock %}
