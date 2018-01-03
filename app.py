@@ -106,28 +106,6 @@ class Entry(flask_db.Model):
     def public(cls):
         return Entry.select().where(Entry.published == True)
 
-# This part is for speaker
-class Speakers(flask_db.Model):
-    name = CharField()
-    title = TextField()
-    about = TextField()
-    facebook = TextField()
-    twitter = TextField()
-    website = TextField()
-    image = TextField()
-    timestamp = DateTimeField(default=datetime.datetime.now, index=True)
-
-    def save(self, *args, **kwargs):
-        # Generate a URL-friendly representation of the entry's title.
-        ret = super(Speakers, self).save(*args, **kwargs)
-
-        return ret
-
-    @classmethod
-    def public(cls):
-        return Speakers.select()
-
-# Speaker Part Done
 
 def login_required(fn):
     @functools.wraps(fn)
@@ -177,30 +155,101 @@ def index():
         query,
         check_bounds=False)
 
-@app.route('/hello')
+# This part is for speaker----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+class Speakers(flask_db.Model):
+    name = CharField()
+    title = TextField()
+    about = TextField()
+    facebook = TextField()
+    twitter = TextField()
+    website = TextField()
+    image = TextField()
+    timestamp = DateTimeField(default=datetime.datetime.now, index=True)
+
+    def save(self, *args, **kwargs):
+        # Generate a URL-friendly representation of the entry's title.
+        if not self.slug:
+            self.slug = re.sub('[^\w]+', '-', self.name.lower()).strip('-')
+        ret = super(Speakers, self).save(*args, **kwargs)
+        return ret
+
+    @classmethod
+    def public(cls):
+        return Speakers.select()
+
+    @classmethod
+    def delete(deletable_slug):
+        deletable = Speakers.get(Speakers.slug == deletable_slug)
+        return deletable.delete_instance()
+
+def add(speaker, template):
+    if request.method == 'POST':
+        speaker.name = request.form.get('name') or ''
+        speaker.title = request.form.get('title') or ''
+        speaker.about = request.form.get('about') or ''
+        speaker.facebook = request.form.get('facebook') or ''
+        speaker.twitter = request.form.get('twitter') or ''
+        speaker.website = request.form.get('website') or ''
+
+        # Uploading Files
+        file = request.files['image']
+        filename = secure_filename(file.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], str(time.time())[4:10] + filename)
+        file.save(image_path)
+        speaker.image = image_path
+
+        if not (speaker.name and speaker.title):
+            flash('Name and Title are required.', 'danger')
+        else:
+            # Wrap the call to save in a transaction so we can roll it back
+            # cleanly in the event of an integrity error.
+            try:
+                with database.atomic():
+                    speaker.save()
+            except IntegrityError:
+                flash('Error: this name is already in use.', 'danger')
+            else:
+                flash('speaker saved successfully.', 'success')
+                return redirect(url_for('speakers'))
+
+    return render_template(template, speaker=speaker)
+
+@app.route('/add-speaker/', methods=['GET', 'POST'])
+def add_speaker():
+    return add(Speakers(name='', title=''), 'add-speaker.html')
+
+@app.route('/speakers/')
 def speakers():
-    # search_query = request.args.get('q')
-    # if search_query:
-    #     query = Entry.search(search_query)
-    # else:
-    #     query = Entry.public().order_by(Entry.timestamp.desc())
     query = Speakers.public().order_by(Speakers.name)
-    # The `object_list` helper will take a base query and then handle
-    # paginating the results if there are more than 20. For more info see
-    # the docs:
-    # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#object_list
     return object_list(
         'speakers.html',
         query,
         check_bounds=False)
 
+@app.route('/delete_speaker/', methods=['GET', 'POST'])
+@login_required
+def delete_speaker():
+    return delete(slug)
+
+
+
+# Speaker Part Done-----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+
 @app.route('/events')
 def events():
     query = Entry.public().order_by(Entry.timestamp.desc())
-    # The `object_list` helper will take a base query and then handle
-    # paginating the results if there are more than 20. For more info see
-    # the docs:
-    # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#object_list
     return object_list(
         'list.html',
         query,

@@ -18,7 +18,7 @@
             {% for speaker in object_list %}
             <div class="col-md-4 testimonial text-center">
                 <div class="card mb-3 ml-auto mr-auto">
-                    <img src="{{ speaker.image }}" class="w-100" style="border-radius: 10px;" alt="{{ speaker.name }} Image" />
+                    <img src="/{{ speaker.image }}" class="w-100" style="border-radius: 10px;" alt="{{ speaker.name }} Image" />
                 </div>
                 <h5 class="mb-1">{{ speaker.name }}</h5>
                 <span class="text-muted d-block mb-2">{{ speaker.title }}</span>
@@ -39,9 +39,14 @@
                             <i class="fa fa-globe"></i>
                         </a>
                     {% endif %}
+                    {% if session.logged_in %}
+                    <a class="mx-3 h4" href="{{ url_for('delete_speaker', slug=speaker.slug) }}" target="_blank">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    {% endif %}
                 </div>
-            {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </div>
 </div>
