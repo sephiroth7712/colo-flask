@@ -4,6 +4,7 @@ import os
 import re
 import urllib
 import time
+import hashlib
 
 from flask import (Flask, flash, Markup, redirect, render_template, request,
                    Response, session, url_for)
@@ -26,7 +27,7 @@ from werkzeug.utils import secure_filename
 # You may consider using a one-way hash to generate the password, and then
 # use the hash again in the login view to perform the comparison. This is just
 # for simplicity.
-ADMIN_PASSWORD = 'secret'
+ADMIN_PASSWORD = 'c7233795b805fca07431a103cf32f74d8b41b352eaa0bd7a8bac67b0e0ea9a536a63fe230b30ff8f9262b8392496255fe5ebbfa5d2976d1c3a2b6ca28b234c6f'
 APP_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # The playhouse.flask_utils.FlaskDB object accepts database URL configuration.
@@ -120,9 +121,10 @@ def login():
     next_url = request.args.get('next') or request.form.get('next')
     if request.method == 'POST' and request.form.get('password'):
         password = request.form.get('password')
+        hashed = hashlib.sha512(password).hexdigest()
         # TODO: If using a one-way hash, you would also hash the user-submitted
         # password and do the comparison on the hashed versions.
-        if password == app.config['ADMIN_PASSWORD']:
+        if hashed == app.config['ADMIN_PASSWORD']:
             session['logged_in'] = True
             session.permanent = True  # Use cookie to store session.
             flash('You are now logged in.', 'success')
