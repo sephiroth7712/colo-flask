@@ -24,13 +24,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{{ url_for('index') }}">Blog</a>
+          <a class="navbar-brand" href="{{ url_for('index') }}">Colosseum</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             {% if session.logged_in %}
-              <li><a href="{{ url_for('drafts') }}">Drafts</a></li>
-              <li><a href="{{ url_for('create') }}">Create Entry</a></li>
               <li><a href="{{ url_for('logout') }}">Log out</a></li>
             {% endif %}
             {% block extra_header %}{% endblock %}

@@ -53,6 +53,9 @@
                             <a class="nav-link" href="{{ url_for('create') }}">Create Entry</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('add_speaker') }}">Add Speaker</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('logout') }}">Log out</a>
                         </li>
                         {% endif %} {% block extra_header %}{% endblock %}

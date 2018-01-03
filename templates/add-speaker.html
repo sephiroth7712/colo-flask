@@ -4,34 +4,33 @@
     <div class="container">
         <form action="{% block form_action %}{{ url_for('add_speaker') }}{% endblock %}" class="form-horizontal" method="post" enctype="multipart/form-data">
             <!-- Name -->
-            <label for="name" class="col-sm-2 control-label">Title</label>
-            <input class="form-control" id="name" name="name" type="text" placeholder="Your Awesome Event" value="{{ speaker.name }}">
+            <label for="name" class="mt-3 col-sm-2 control-label">Name</label>
+            <input class="form-control" id="name" name="name" type="text" placeholder="Dr. Ajinkya Sharma" value="{{ speaker.name }}">
 
             <!-- Title -->
-            <label for="title" class="col-sm-2 control-label">Title</label>
-            <input class="form-control" id="title" name="title" type="text" placeholder="Your Awesome Event" value="{{ speaker.title }}">
+            <label for="title" class="mt-3 col-sm-2 control-label">Title</label>
+            <input class="form-control" id="title" name="title" type="text" placeholder="Founder and CEO GiggleTech" value="{{ speaker.title }}">
 
             <!-- About -->
-            <label for="about" class="mt-3 col-sm-2 control-label">About</label>
+            <label for="about" class="mt-3 mt-3 col-sm-2 control-label">About</label>
             <textarea class="form-control" id="about" name="about" style="height: 300px;">{{ speaker.about }}</textarea>
 
             <!-- Facebook -->
-            <label for="facebook" class="col-sm-2 control-label">Facebook</label>
-            <input class="form-control" id="facebook" name="facebook" type="text" placeholder="Your Awesome Event" value="{{ speaker.facebook }}">
+            <label for="facebook" class="mt-3 col-sm-2 control-label">Facebook</label>
+            <input class="form-control" id="facebook" name="facebook" type="text" placeholder="https://facebook.com/DBITmt-3 Colosseum" value="{% if speaker.facebook %}{{ speaker.facebook }}{% endif %}">
 
             <!-- Twitter -->
-            <label for="twitter" class="col-sm-2 control-label">Twitter</label>
-            <input class="form-control" id="twitter" name="twitter" type="text" placeholder="Your Awesome Event" value="{{ speaker.twitter }}">
+            <label for="twitter" class="mt-3 col-sm-2 control-label">Twitter</label>
+            <input class="form-control" id="twitter" name="twitter" type="text" placeholder="https://twitter.com/CobaltAI" value="{% if speaker.twitter %}{{ speaker.twitter }}{% endif %}">
 
             <!-- Website -->
-            <label for="website" class="col-sm-2 control-label">Website</label>
-            <input class="form-control" id="website" name="website" type="text" placeholder="Your Awesome Event" value="{{ speaker.website }}">
+            <label for="website" class="mt-3 col-sm-2 control-label">Website</label>
+            <input class="form-control" id="website" name="website" type="text" placeholder="https://cobaltai.in" value="{% if speaker.website %}{{ speaker.website }}{% endif %}">
 
 
             <!-- Speaker Image -->
-            <label for=image class="custom-file mt-3 w-100">
+            <label for="image" class="custom-file col-sm-2 mt-3 w-100">Image</label>
             <input class="form-control" id="image" name="image" type="file" required>
-            </label>
 
             <div>
                 <div class="mt-5 col-sm-offset-2 col-sm-10 col-lg-12">
