@@ -170,6 +170,7 @@ class Speakers(flask_db.Model):
     twitter = TextField()
     website = TextField()
     image = TextField()
+    slug = CharField()
     timestamp = DateTimeField(default=datetime.datetime.now, index=True)
 
     def save(self, *args, **kwargs):
@@ -182,11 +183,6 @@ class Speakers(flask_db.Model):
     @classmethod
     def public(cls):
         return Speakers.select()
-
-    @classmethod
-    def delete(deletable_slug):
-        deletable = Speakers.get(Speakers.slug == deletable_slug)
-        return deletable.delete_instance()
 
 def add(speaker, template):
     if request.method == 'POST':
@@ -232,12 +228,11 @@ def speakers():
         query,
         check_bounds=False)
 
-@app.route('/delete_speaker/', methods=['GET', 'POST'])
+@app.route('/<slug>/delete_speaker/')
 @login_required
-def delete_speaker():
-    return delete(slug)
-
-
+def delete_speaker(slug):
+    delete = Speakers.delete().where(Speakers.slug == slug).execute()
+    return redirect(url_for('speakers'))
 
 # Speaker Part Done-----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
