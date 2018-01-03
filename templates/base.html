@@ -36,17 +36,14 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('index') }}">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('events') }}">Events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Exhibition</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Speakers</a>
+                            <a class="nav-link" href="{{ url_for('speakers') }}">Speakers</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('index') }}#Sponsors">Sponsors</a>
@@ -71,6 +68,11 @@
                                 <i class="fa fa-facebook"></i>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" target="_blank" href="http://www.dbit.in">
+                                <i class="fa fa-globe"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -92,6 +94,10 @@
                     <i class="fa fa-facebook"></i>
                     <span class="sr-only">View our Facebook Profile <span>
                 </a>
+                <a class="globe mx-3 h4" href="http://www.dbit.in" target="_blank">
+                    <i class="fa fa-globe"></i>
+                    <span class="sr-only">View DBIT Website <span>
+            </a>
         </div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="

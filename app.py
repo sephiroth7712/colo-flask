@@ -131,6 +131,29 @@ class FTSEntry(FTSModel):
     class Meta:
         database = database
 
+# This part is for speaker
+class Speaker(flask_db.Model):
+    name = CharField()
+    title = TextField()
+    about = TextField()
+    facebook = TextField()
+    twitter = TextField()
+    website = TextField()
+    image = TextField()
+    timestamp = DateTimeField(default=datetime.datetime.now, index=True)
+
+    def save(self, *args, **kwargs):
+        # Generate a URL-friendly representation of the entry's title.
+        ret = super(Speaker, self).save(*args, **kwargs)
+
+        return ret
+
+    @classmethod
+    def public(cls):
+        return Speaker.select()
+
+# Speaker Part Done
+
 def login_required(fn):
     @functools.wraps(fn)
     def inner(*args, **kwargs):
@@ -176,6 +199,23 @@ def index():
     # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#object_list
     return object_list(
         'index.html',
+        query,
+        check_bounds=False)
+
+@app.route('/speakers')
+def speakers():
+    # search_query = request.args.get('q')
+    # if search_query:
+    #     query = Entry.search(search_query)
+    # else:
+    #     query = Entry.public().order_by(Entry.timestamp.desc())
+    query = Speaker.public().order_by(Speaker.name)
+    # The `object_list` helper will take a base query and then handle
+    # paginating the results if there are more than 20. For more info see
+    # the docs:
+    # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#object_list
+    return object_list(
+        'speakers.html',
         query,
         check_bounds=False)
 
@@ -275,6 +315,7 @@ def not_found(exc):
 
 def main():
     database.create_tables([Entry, FTSEntry], safe=True)
+    database.create_tables([Speaker], safe=True)
     app.run(debug=True)
 
 if __name__ == '__main__':
