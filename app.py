@@ -100,39 +100,14 @@ class Entry(flask_db.Model):
         ret = super(Entry, self).save(*args, **kwargs)
 
         # Store search content.
-        self.update_search_index()
         return ret
-
-    def update_search_index(self):
-        # Create a row in the FTSEntry table with the post content. This will
-        # allow us to use SQLite's awesome full-text search extension to
-        # search our entries.
-        query = (FTSEntry
-                 .select(FTSEntry.docid, FTSEntry.entry_id)
-                 .where(FTSEntry.entry_id == self.id))
-        try:
-            fts_entry = query.get()
-        except FTSEntry.DoesNotExist:
-            fts_entry = FTSEntry(entry_id=self.id)
-            force_insert = True
-        else:
-            force_insert = False
-        fts_entry.content = '\n'.join((self.title, self.content))
-        fts_entry.save(force_insert=force_insert)
 
     @classmethod
     def public(cls):
         return Entry.select().where(Entry.published == True)
 
-class FTSEntry(FTSModel):
-    entry_id = IntegerField(Entry)
-    content = TextField()
-
-    class Meta:
-        database = database
-
 # This part is for speaker
-class Speaker(flask_db.Model):
+class Speakers(flask_db.Model):
     name = CharField()
     title = TextField()
     about = TextField()
@@ -144,13 +119,13 @@ class Speaker(flask_db.Model):
 
     def save(self, *args, **kwargs):
         # Generate a URL-friendly representation of the entry's title.
-        ret = super(Speaker, self).save(*args, **kwargs)
+        ret = super(Speakers, self).save(*args, **kwargs)
 
         return ret
 
     @classmethod
     def public(cls):
-        return Speaker.select()
+        return Speakers.select()
 
 # Speaker Part Done
 
@@ -202,14 +177,14 @@ def index():
         query,
         check_bounds=False)
 
-@app.route('/speakers')
+@app.route('/hello')
 def speakers():
     # search_query = request.args.get('q')
     # if search_query:
     #     query = Entry.search(search_query)
     # else:
     #     query = Entry.public().order_by(Entry.timestamp.desc())
-    query = Speaker.public().order_by(Speaker.name)
+    query = Speakers.public().order_by(Speakers.name)
     # The `object_list` helper will take a base query and then handle
     # paginating the results if there are more than 20. For more info see
     # the docs:
@@ -314,8 +289,8 @@ def not_found(exc):
     return Response('<h3>Not found</h3>'), 404
 
 def main():
-    database.create_tables([Entry, FTSEntry], safe=True)
-    database.create_tables([Speaker], safe=True)
+    database.create_tables([Entry], safe=True)
+    database.create_tables([Speakers], safe=True)
     app.run(debug=True)
 
 if __name__ == '__main__':
