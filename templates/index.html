@@ -14,10 +14,10 @@
               <div class="row">
                   <div class="card-deck">
                       {% for entry in object_list %}
-                      {% if entry.is_highlight %}
+                      {% if entry.is_highlight and entry.published %}
                       <div class="col-md-12 col-lg-4">
                           <div class="custom-card custom-card-height card mb-4">
-                              <img class="card-img-top" src="/{{ entry.image }}" alt="Card image cap">
+                              <img class="card-img-top" src="/{{ entry.image }}" alt="{{ entry.title }}">
                               <div class="card-body">
                                   <h4 class="card-title">{{ entry.title }}</h4>
                                   <p class="card-text">{{ entry.html_content[0:90]}}...
@@ -29,7 +29,7 @@
                       {% endif %}
                       {% endfor %}
                   </div>
-                  <a class="btn btn-lg btn-secondary btn-pill ml-auto mr-auto mt-5" href="#">View All Events</a>
+                  <a class="btn btn-lg btn-secondary btn-pill ml-auto mr-auto mt-5" href="{{ url_for('events') }}">View All Events</a>
               </div>
           </div>
       </div>

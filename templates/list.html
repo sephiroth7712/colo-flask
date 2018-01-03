@@ -2,7 +2,7 @@
 
 {% block extra_style %}
     .header {
-        background: url("{{ url_for('static', filename='images/common/events.jpg')}}");
+        background: url("{{ url_for('static', filename='images/events.jpg')}}");
         -webkit-clip-path: polygon(0 0, 100% 0, 100% 87%, 0 100%);
         clip-path: polygon(0 0, 100% 0, 100% 87%, 0 100%);
         background-attachment: fixed;
@@ -17,45 +17,20 @@
             <div class="py-4">
                 <div class="row">
                     <div class="card-deck">
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/isdi-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
 
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/panel-min.jpg" alt="Card image cap">
-                            </div>
+                        {% for entry in object_list %}
+                        {% if entry.category == "Talk" and entry.published %}
+                        <div class="text-center col-md-12 col-lg-3">
+                            <a href="{{ url_for('detail', slug=entry.slug) }}">
+                                <div class="custom-card card mb-4">
+                                    <img class="card-img" src="/{{ entry.image }}" alt="{{ entry.title }}">
+                                </div>
+                                <h5>{{ entry.title }}</h5>
+                            </a>
                         </div>
+                        {% endif %}
+                        {% endfor %}
 
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/automobile-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/machinelearning-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/data-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/structure.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/rapid.jpg" alt="Card image cap">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -69,26 +44,19 @@
                 <div class="row">
                     <div class="card-deck">
 
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/3d-min.jpg" alt="Card image cap">
+                            {% for entry in object_list %}
+                            {% if entry.category == "Workshop" and entry.published %}
+                            <div class="text-center col-md-12 col-lg-3">
+                                <a href="{{ url_for('detail', slug=entry.slug) }}">
+                                    <div class="custom-card card mb-4">
+                                        <img class="card-img" src="/{{ entry.image }}" alt="{{ entry.title }}">
+                                    </div>
+                                    <h5>{{ entry.title }}</h5>
+                                </a>
                             </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/linefollower-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/design-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/matlab-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
+                            {% endif %}
+                            {% endfor %}
+
                     </div>
                 </div>
             </div>
@@ -101,27 +69,19 @@
             <div class="py-4">
                 <div class="row">
                     <div class="card-deck">
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/mega-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
 
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/debate-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/design-challenge-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-lg-3">
-                                <div class="custom-card card mb-4">
-                                    <img class="card-img" src="images/events/litsoc-min.jpg" alt="Card image cap">
+                            {% for entry in object_list %}
+                            {% if entry.category == "Competition" and entry.published %}
+                            <div class="text-center col-md-12 col-lg-3">
+                                    <a href="{{ url_for('detail', slug=entry.slug) }}">
+                                        <div class="custom-card card mb-4">
+                                            <img class="card-img" src="/{{ entry.image }}" alt="{{ entry.title }}">
+                                        </div>
+                                        <h5>{{ entry.title }}</h5>
+                                    </a>
                                 </div>
-                            </div>
+                            {% endif %}
+                            {% endfor %}
                     </div>
                 </div>
             </div>
@@ -134,11 +94,18 @@
                 <div class="py-4">
                     <div class="row">
                         <div class="card-deck">
-                            <div class="col-md-12 col-lg-3">
-                                <div class="custom-card card mb-4">
-                                    <img class="card-img" src="images/events/innovex-min.jpg" alt="Card image cap">
-                                </div>
-                            </div>
+                                {% for entry in object_list %}
+                                {% if entry.category == "Exhibition" and entry.published %}
+                                <div class="text-center col-md-12 col-lg-3">
+                                        <a href="{{ url_for('detail', slug=entry.slug) }}">
+                                            <div class="custom-card card mb-4">
+                                                <img class="card-img" src="/{{ entry.image }}" alt="{{ entry.title }}">
+                                            </div>
+                                            <h5>{{ entry.title }}</h5>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                                {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -151,29 +118,18 @@
             <div class="py-4">
                 <div class="row">
                     <div class="card-deck">
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/jailbreak-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/juicebox-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/lasertag-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 col-lg-3">
-                            <div class="custom-card card mb-4">
-                                <img class="card-img" src="images/events/maze-min.jpg" alt="Card image cap">
-                            </div>
-                        </div>
+                            {% for entry in object_list %}
+                            {% if entry.category == "Games" and entry.published %}
+                            <div class="text-center col-md-12 col-lg-3">
+                                    <a href="{{ url_for('detail', slug=entry.slug) }}">
+                                        <div class="custom-card card mb-4">
+                                            <img class="card-img" src="/{{ entry.image }}" alt="{{ entry.title }}">
+                                        </div>
+                                        <h5>{{ entry.title }}</h5>
+                                    </a>
+                                </div>
+                            {% endif %}
+                            {% endfor %}
                     </div>
                 </div>
             </div>

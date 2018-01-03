@@ -203,7 +203,7 @@ def _create_or_edit(entry, template):
         entry.date = request.form.get('date') or ''
         entry.time = request.form.get('time') or ''
         entry.contact = request.form.get('contact') or ''
-        entry.fee = request.form.get('Fee') or ''
+        entry.fee = request.form.get('fee') or ''
         # Uploading Files
         file = request.files['image']
         filename = secure_filename(file.filename)
