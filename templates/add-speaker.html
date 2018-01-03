@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block content %}
+<div class="blog py-4">
+    <h3 class="section-title text-center m-5">New Event</h3>
+    <div class="container">
+        <form action="{% block form_action %}{{ url_for('add_speaker') }}{% endblock %}" class="form-horizontal" method="post" enctype="multipart/form-data">
+            <!-- Name -->
+            <label for="name" class="col-sm-2 control-label">Title</label>
+            <input class="form-control" id="name" name="name" type="text" placeholder="Your Awesome Event" value="{{ speaker.name }}">
+
+            <!-- Title -->
+            <label for="title" class="col-sm-2 control-label">Title</label>
+            <input class="form-control" id="title" name="title" type="text" placeholder="Your Awesome Event" value="{{ speaker.title }}">
+
+            <!-- About -->
+            <label for="about" class="mt-3 col-sm-2 control-label">About</label>
+            <textarea class="form-control" id="about" name="about" style="height: 300px;">{{ speaker.about }}</textarea>
+
+            <!-- Facebook -->
+            <label for="facebook" class="col-sm-2 control-label">Facebook</label>
+            <input class="form-control" id="facebook" name="facebook" type="text" placeholder="Your Awesome Event" value="{{ speaker.facebook }}">
+
+            <!-- Twitter -->
+            <label for="twitter" class="col-sm-2 control-label">Twitter</label>
+            <input class="form-control" id="twitter" name="twitter" type="text" placeholder="Your Awesome Event" value="{{ speaker.twitter }}">
+
+            <!-- Website -->
+            <label for="website" class="col-sm-2 control-label">Website</label>
+            <input class="form-control" id="website" name="website" type="text" placeholder="Your Awesome Event" value="{{ speaker.website }}">
+
+
+            <!-- Speaker Image -->
+            <label for=image class="custom-file mt-3 w-100">
+            <input class="form-control" id="image" name="image" type="file" required>
+            </label>
+
+            <div>
+                <div class="mt-5 col-sm-offset-2 col-sm-10 col-lg-12">
+                    <button class="btn btn-primary btn-pill" type="submit">{% block save_button %}Add Speaker{% endblock %}</button>
+                    <a class="btn btn btn-secondary btn-pill" href="{{ url_for('index') }}">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

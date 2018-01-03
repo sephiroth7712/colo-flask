@@ -4,6 +4,7 @@ import os
 import re
 import urllib
 import time
+import hashlib
 
 from flask import (Flask, flash, Markup, redirect, render_template, request,
                    Response, session, url_for)
@@ -26,7 +27,7 @@ from werkzeug.utils import secure_filename
 # You may consider using a one-way hash to generate the password, and then
 # use the hash again in the login view to perform the comparison. This is just
 # for simplicity.
-ADMIN_PASSWORD = 'secret'
+ADMIN_PASSWORD = 'c7233795b805fca07431a103cf32f74d8b41b352eaa0bd7a8bac67b0e0ea9a536a63fe230b30ff8f9262b8392496255fe5ebbfa5d2976d1c3a2b6ca28b234c6f'
 APP_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # The playhouse.flask_utils.FlaskDB object accepts database URL configuration.
@@ -100,36 +101,12 @@ class Entry(flask_db.Model):
         ret = super(Entry, self).save(*args, **kwargs)
 
         # Store search content.
-        self.update_search_index()
         return ret
-
-    def update_search_index(self):
-        # Create a row in the FTSEntry table with the post content. This will
-        # allow us to use SQLite's awesome full-text search extension to
-        # search our entries.
-        query = (FTSEntry
-                 .select(FTSEntry.docid, FTSEntry.entry_id)
-                 .where(FTSEntry.entry_id == self.id))
-        try:
-            fts_entry = query.get()
-        except FTSEntry.DoesNotExist:
-            fts_entry = FTSEntry(entry_id=self.id)
-            force_insert = True
-        else:
-            force_insert = False
-        fts_entry.content = '\n'.join((self.title, self.content))
-        fts_entry.save(force_insert=force_insert)
 
     @classmethod
     def public(cls):
         return Entry.select().where(Entry.published == True)
 
-class FTSEntry(FTSModel):
-    entry_id = IntegerField(Entry)
-    content = TextField()
-
-    class Meta:
-        database = database
 
 def login_required(fn):
     @functools.wraps(fn)
@@ -144,9 +121,10 @@ def login():
     next_url = request.args.get('next') or request.form.get('next')
     if request.method == 'POST' and request.form.get('password'):
         password = request.form.get('password')
+        hashed = hashlib.sha512(password).hexdigest()
         # TODO: If using a one-way hash, you would also hash the user-submitted
         # password and do the comparison on the hashed versions.
-        if password == app.config['ADMIN_PASSWORD']:
+        if hashed == app.config['ADMIN_PASSWORD']:
             session['logged_in'] = True
             session.permanent = True  # Use cookie to store session.
             flash('You are now logged in.', 'success')
@@ -179,13 +157,96 @@ def index():
         query,
         check_bounds=False)
 
+# This part is for speaker----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+class Speakers(flask_db.Model):
+    name = CharField()
+    title = TextField()
+    about = TextField()
+    facebook = TextField()
+    twitter = TextField()
+    website = TextField()
+    image = TextField()
+    slug = CharField()
+    timestamp = DateTimeField(default=datetime.datetime.now, index=True)
+
+    def save(self, *args, **kwargs):
+        # Generate a URL-friendly representation of the entry's title.
+        if not self.slug:
+            self.slug = re.sub('[^\w]+', '-', self.name.lower()).strip('-')
+        ret = super(Speakers, self).save(*args, **kwargs)
+        return ret
+
+    @classmethod
+    def public(cls):
+        return Speakers.select()
+
+def add(speaker, template):
+    if request.method == 'POST':
+        speaker.name = request.form.get('name') or ''
+        speaker.title = request.form.get('title') or ''
+        speaker.about = request.form.get('about') or ''
+        speaker.facebook = request.form.get('facebook') or ''
+        speaker.twitter = request.form.get('twitter') or ''
+        speaker.website = request.form.get('website') or ''
+
+        # Uploading Files
+        file = request.files['image']
+        filename = secure_filename(file.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], str(time.time())[4:10] + filename)
+        file.save(image_path)
+        speaker.image = image_path
+
+        if not (speaker.name and speaker.title):
+            flash('Name and Title are required.', 'danger')
+        else:
+            # Wrap the call to save in a transaction so we can roll it back
+            # cleanly in the event of an integrity error.
+            try:
+                with database.atomic():
+                    speaker.save()
+            except IntegrityError:
+                flash('Error: this name is already in use.', 'danger')
+            else:
+                flash('speaker saved successfully.', 'success')
+                return redirect(url_for('speakers'))
+
+    return render_template(template, speaker=speaker)
+
+@app.route('/add-speaker/', methods=['GET', 'POST'])
+def add_speaker():
+    return add(Speakers(name='', title=''), 'add-speaker.html')
+
+@app.route('/speakers/')
+def speakers():
+    query = Speakers.public().order_by(Speakers.name)
+    return object_list(
+        'speakers.html',
+        query,
+        check_bounds=False)
+
+@app.route('/<slug>/delete_speaker/')
+@login_required
+def delete_speaker(slug):
+    delete = Speakers.delete().where(Speakers.slug == slug).execute()
+    return redirect(url_for('speakers'))
+
+# Speaker Part Done-----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+
 @app.route('/events')
 def events():
     query = Entry.public().order_by(Entry.timestamp.desc())
-    # The `object_list` helper will take a base query and then handle
-    # paginating the results if there are more than 20. For more info see
-    # the docs:
-    # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#object_list
     return object_list(
         'list.html',
         query,
@@ -274,7 +335,8 @@ def not_found(exc):
     return Response('<h3>Not found</h3>'), 404
 
 def main():
-    database.create_tables([Entry, FTSEntry], safe=True)
+    database.create_tables([Entry], safe=True)
+    database.create_tables([Speakers], safe=True)
     app.run(debug=True)
 
 if __name__ == '__main__':
