@@ -5,6 +5,7 @@ import re
 import urllib
 import time
 import hashlib
+import random
 
 from flask import (Flask, flash, Markup, redirect, render_template, request,
                    Response, session, url_for)
@@ -241,8 +242,78 @@ def delete_speaker(slug):
 # ----------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
+
+# This part is for Survey----------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+
+class Survey(flask_db.Model):
+    name = CharField()
+    department = TextField()
+    year = TextField()
+    tags = TextField()
+    timestamp = DateTimeField(default=datetime.datetime.now, index=True)
+
+    def save(self, *args, **kwargs):
+        ret = super(Survey, self).save(*args, **kwargs)
+        return ret
+
+    @classmethod
+    def public(cls):
+        return Survey.select()
+
+@app.route('/survey/', methods=['GET', 'POST'])
+def survey():
+    return add_survey_entry(Survey(name='', department=''), 'survey.html')
+
+def recommend(tag_list):
+    # query = Entry.public().where((Entry.tags.contains('Future')) | (Entry.tags.contains('transport')))
+    query = Entry.public().where(Entry.tags.contains('Future'))
+    return object_list(
+        'list.html',
+        query,
+        check_bounds=False)
+
+def add_survey_entry(survey, template):
+    if request.method == 'POST':
+        survey.name = request.form.get('name') or ''
+        survey.department = request.form.get('department') or ''
+        survey.year = request.form.get('year') or ''
+        temp = request.form.getlist('tags_input')
+        temp2=[]
+        for x in temp:
+            temp2.append(x.split('_', 1)[-1])
+        survey.tags = ', '.join(temp2) or ''
+        if not (survey.name):
+            flash('Name required.', 'danger')
+        else:
+            # Wrap the call to save in a transaction so we can roll it back
+            # cleanly in the event of an integrity error.
+            try:
+                with database.atomic():
+                    survey.save()
+            except IntegrityError:
+                flash('Error: this name is already in use.', 'danger')
+            else:
+                flash('survey saved successfully.', 'success')
+                return recommend(survey.tags)
+
+    return render_template(template)
+
+@app.route('/find_event', methods=['POST'])
+def find_event():
+    tags =  request.form['tags_input'];
+    password = request.form['password'];
+    return json.dumps({'status':'OK','user':user,'pass':password});
+
+# Survey Part Done-----------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
+
 
 @app.route('/events')
 def events():
@@ -337,6 +408,7 @@ def not_found(exc):
 def main():
     database.create_tables([Entry], safe=True)
     database.create_tables([Speakers], safe=True)
+    database.create_tables([Survey], safe=True)
     app.run(debug=True)
 
 if __name__ == '__main__':

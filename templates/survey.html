@@ -1,0 +1,127 @@
+{% extends "base.html" %} {% block content %}
+<div class="blog py-4">
+  <div class="container">
+    <form onload="myFunction()" action="{% block form_action %}{{ url_for('survey') }}{% endblock %}" class="form-horizontal" method="post" enctype="multipart/form-data">
+            <div class="form-details">
+                <h3 class="section-title text-center m-5">Your Details</h3>
+                <label for="name" class="col-sm-2 control-label">Name</label>
+                <input class="form-control" id="name" name="name" type="text" placeholder="Name">
+
+                <label for="department" class="mt-3 col-sm-2 control-label">Department</label>
+                <select class="custom-select d-block col-md-3" id="department" name="department" required onchange="myFunction()">
+                    <option value="" hidden>Choose One</option>
+                    <option value="comps">Computers</option>
+                    <option value="it">Information Technology</option>
+                    <option value="mech">Mechanical</option>
+                    <option value="extc">EXTC</option>
+                </select>
+
+                <label for="year" class="mt-3 col-sm-2 control-label">Year</label>
+                <select class="custom-select d-block col-md-3" id="year" name="year" required>
+                    <option value="" hidden>Choose One</option>
+                    <option value="FE">FE</option>
+                    <option value="SE">SE</option>
+                    <option value="TE">TE</option>
+                    <option value="BE">BE</option>
+                </select>
+            </div>
+            <div class="form-itcomps text-center">
+                <h3 class="section-title text-center m-5">What Interests You</h3>
+                {% for area in ["BlockChain","Cryptocurrency","Fintech (Automation in Finance)","Deep Learning","Machine Learning","Big Data","TensorFlow","Python","Python Flask","Python Django","App Development","UI/UX Design","Javascript Development","Electron with NodeJS","Game Development","Simulation","Cyber Security"]%}
+                <input id="it_chk_{{area}}" type="checkbox" name="tags_input" class="custom-form-check vis-hidden new-post-tags" value="it_{{area}}" />
+                <label class="custom-label" for="it_chk_{{ area }}">{{ area }}</label>
+                {% endfor %}
+            </div>
+            <div class="form-extc text-center">
+                <h3 class="section-title text-center m-5">What Interests You</h3>
+                {% for area in ["Electric Cars","Hyperloop","Robotics","Ardunio","Raspberry Pi","Embedded Systems","IoT","Satellites","3D Printing","ISRO","DRDO","Space Technologies"]%}
+                <input id="extc_chk_{{area}}" type="checkbox" name="tags_input" class="custom-form-check vis-hidden new-post-tags" value="extc_{{area}}" />
+                <label class="custom-label" for="extc_chk_{{ area }}">{{ area }}</label>
+                {% endfor %}
+            </div>
+            <div class="form-mech text-center">
+                <h3 class="section-title text-center m-5">What Interests You</h3>
+                {% for area in ["Automation","Electric Cars","Manufacturing","IoT","Hyperloop","Automobile","Thermodynamics","Space Technologies","Infrastructure","Mumbai Metro","3D Printing","ISRO","DRDO"]%}
+                <input id="mech_chk_{{area}}" type="checkbox" name="tags_input" class="custom-form-check vis-hidden new-post-tags" value="mech_{{area}}" />
+                <label class="custom-label" for="mech_chk_{{ area }}">{{ area }}</label>
+                {% endfor %}
+            </div>
+
+            <div class="form-generic text-center">
+                    <h3 class="section-title text-center m-5">Other Topics</h3>
+                    {% for area in ["Idea Pitching","Game Theory","Entrepreurship","Finance","Poems","Movies","Project Management","Literary Arts","Debating","India of Tomorrow","Gaming","Sustainabaility","Product Unboxing","Product Design","The Future","Photography"]%}
+                    <input id="chk_{{area}}" type="checkbox" name="tags_input" class="custom-form-check vis-hidden new-post-tags" value="gen_{{area}}" />
+                    <label class="custom-label" for="chk_{{ area }}">{{ area }}</label>
+                    {% endfor %}
+            </div>
+
+            <div>
+                    <div class="mt-5 col-sm-offset-2 col-sm-10 col-lg-12">
+                        <button class="btn btn-primary btn-pill" type="submit">{% block save_button %}Done{% endblock %}</button>
+                        <a class="btn btn btn-secondary btn-pill" href="{{ url_for('index') }}">Cancel</a>
+                    </div>
+            </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block inject_footer%}
+<script>
+$('.form-details, .form-generic').show();
+$('.form-itcomps, .form-mech, .form-extc').hide();
+function myFunction(){
+    var x = document.getElementById("department").value;
+    if(x == 'comps' || x == 'it'){
+        $('.form-itcomps').show();
+        $('.form-mech, .form-extc').hide();
+    } else if(x == 'mech'){
+        $('.form-mech').show();
+        $('.form-itcomps, .form-extc').hide();
+    } else if(x == 'extc'){
+        $('.form-extc').show();
+        $('.form-itcomps, .form-mech').hide();
+    }
+}
+</script>
+{% endblock %}
+
+{% block extra_style%}
+.vis-hidden {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    .custom-label {
+      margin: 2px;
+      margin-top: 8px;
+      padding: 15px;
+      border: 1px solid rgb(124, 124, 124);
+      border-radius: 50px;
+      color: rgb(124, 124, 124);
+    }
+
+    .custom-form-check:focus + .custom-label {
+      border-color:rgb(0,123,255);
+    }
+
+    .custom-form-check:hover + .custom-label {
+      border-color:rgb(0,123,255);
+      color: rgb(0,123,255);
+    }
+
+    .custom-form-check:checked + .custom-label {
+      background-color:rgb(0,123,255);
+      color: white;
+      border-color: rgb(0,123,255);
+    }
+
+    .custom-form-check:focus:checked + .custom-label {
+      border-color: green;
+    }
+{% endblock %}
