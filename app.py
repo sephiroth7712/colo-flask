@@ -248,6 +248,17 @@ def delete_speaker(slug):
 # ----------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
+class EventPref(flask_db.Model):
+    name = CharField()
+    event_list = TextField()
+
+    def save(self, *args, **kwargs):
+        ret = super(EventPref, self).save(*args, **kwargs)
+        return ret
+
+    @classmethod
+    def public(cls):
+        return EventPref.select()
 
 class Survey(flask_db.Model):
     name = CharField()
@@ -268,13 +279,16 @@ class Survey(flask_db.Model):
 def survey():
     return add_survey_entry(Survey(name='', department=''), 'survey.html')
 
-def recommend(tag_list):
+def recommend(tag_list, name):
     # query = Entry.public().where((Entry.tags.contains('Future')) | (Entry.tags.contains('transport')))
-    query = Entry.public().where(Entry.tags.contains('Future'))
+    query = Entry.public().where(Entry.tags.contains('highlight'))
+    for tag in tag_list:
+        query = query | Entry.public().where(Entry.tags.contains(tag))
+
     return object_list(
         'list.html',
         query,
-        check_bounds=False)
+        check_bounds=False, user=name)
 
 def add_survey_entry(survey, template):
     if request.method == 'POST':
@@ -298,15 +312,9 @@ def add_survey_entry(survey, template):
                 flash('Error: this name is already in use.', 'danger')
             else:
                 flash('survey saved successfully.', 'success')
-                return recommend(survey.tags)
+                return recommend(temp2, survey.name)
 
     return render_template(template)
-
-@app.route('/find_event', methods=['POST'])
-def find_event():
-    tags =  request.form['tags_input'];
-    password = request.form['password'];
-    return json.dumps({'status':'OK','user':user,'pass':password});
 
 # Survey Part Done-----------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
@@ -409,6 +417,7 @@ def main():
     database.create_tables([Entry], safe=True)
     database.create_tables([Speakers], safe=True)
     database.create_tables([Survey], safe=True)
+    database.create_tables([EventPref], safe=True)
     app.run(debug=True)
 
 if __name__ == '__main__':
