@@ -279,6 +279,31 @@ class Survey(flask_db.Model):
 def survey():
     return add_survey_entry(Survey(name='', department=''), 'survey.html')
 
+def complete_survey(pref, template):
+    if request.method == 'POST':
+        pref.name = request.form.get('name') or ''
+        temp = request.form.getlist('event_list')
+        pref.event_list = ', '.join(temp) or ''
+        if not (pref.name):
+            flash('Name required.', 'danger')
+        else:
+            # Wrap the call to save in a transaction so we can roll it back
+            # cleanly in the event of an integrity error.
+            try:
+                with database.atomic():
+                    pref.save()
+            except IntegrityError:
+                flash('Error: this name is already in use.', 'danger')
+            else:
+                flash('Survey saved successfully.', 'success')
+                return redirect(url_for('index'))
+
+    return render_template(template)
+
+@app.route('/complete/', methods=['GET', 'POST'])
+def complete():
+    return complete_survey(EventPref(), 'pref_list.html')
+
 def recommend(tag_list, name):
     # query = Entry.public().where((Entry.tags.contains('Future')) | (Entry.tags.contains('transport')))
     query = Entry.public().where(Entry.tags.contains('highlight'))
@@ -286,7 +311,7 @@ def recommend(tag_list, name):
         query = query | Entry.public().where(Entry.tags.contains(tag))
 
     return object_list(
-        'list.html',
+        'pref_list.html',
         query,
         check_bounds=False, user=name)
 
@@ -418,7 +443,8 @@ def main():
     database.create_tables([Speakers], safe=True)
     database.create_tables([Survey], safe=True)
     database.create_tables([EventPref], safe=True)
-    app.run(debug=True)
+    database.close()
+    app.run(host='0.0.0.0')
 
 if __name__ == '__main__':
     main()

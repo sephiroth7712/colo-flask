@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="{% block form_action %}{{ url_for('complete') }}{% endblock %}" class="form-horizontal" method="post" enctype="multipart/form-data">
+<div class="blog py-4">
+        <h3 class="section-title text-center m-5">Recommendations</h3>
+        <input class="form-control" id="name" name="name" type="text" value="{{ user }}" hidden>
+        <div class="container">
+            <div class="py-4">
+                <div class="row">
+                    <div class="card-deck">
+                        {% for entry in object_list %}
+                        {% if entry.published %}
+                        <div class="col-md-12 col-lg-4">
+                            <div class="custom-card custom-card-height card mb-4">
+                                <img class="card-img-top" src="/{{ entry.image }}" alt="{{ entry.title }}">
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ entry.title }}</h4>
+                                    <p class="card-text">{{ entry.html_content[0:90]}}...
+                                    </p>
+                                    <input id="{{ entry.title }}" type="checkbox" name="event_list" class="custom-form-check vis-hidden new-post-tags" value="{{ entry.title }}" />
+                                    <label class="custom-label" for="{{ entry.title }}">Interested</label>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="text-center mt-5 col-sm-offset-2 col-sm-10 col-lg-12">
+        <button class="btn btn-primary btn-pill" type="submit">{% block save_button %}Done{% endblock %}</button>
+    </div>
+</form>
+{% endblock %}
+{% block extra_style%}
+.vis-hidden {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    .custom-label {
+      margin: 2px;
+      margin-top: 8px;
+      padding: 15px;
+      border: 1px solid rgb(124, 124, 124);
+      border-radius: 50px;
+      color: rgb(124, 124, 124);
+    }
+
+    .custom-form-check:focus + .custom-label {
+      border-color:rgb(0,123,255);
+    }
+
+    .custom-form-check:hover + .custom-label {
+      border-color:rgb(0,123,255);
+      color: rgb(0,123,255);
+    }
+
+    .custom-form-check:checked + .custom-label {
+      background-color:rgb(0,123,255);
+      color: white;
+      border-color: rgb(0,123,255);
+    }
+
+    .custom-form-check:focus:checked + .custom-label {
+      border-color: green;
+    }
+{% endblock %}
