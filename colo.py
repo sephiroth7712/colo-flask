@@ -143,16 +143,7 @@ def logout():
 
 @app.route('/')
 def index():
-    # search_query = request.args.get('q')
-    # if search_query:
-    #     query = Entry.search(search_query)
-    # else:
-    #     query = Entry.public().order_by(Entry.timestamp.desc())
     query = Entry.public().order_by(Entry.timestamp.desc())
-    # The `object_list` helper will take a base query and then handle
-    # paginating the results if there are more than 20. For more info see
-    # the docs:
-    # http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#object_list
     return object_list(
         'index.html',
         query,
@@ -347,7 +338,6 @@ def add_survey_entry(survey, template):
 # ----------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------
 
-
 @app.route('/events')
 def events():
     query = Entry.public().order_by(Entry.timestamp.desc())
@@ -444,7 +434,7 @@ def main():
     database.create_tables([Survey], safe=True)
     database.create_tables([EventPref], safe=True)
     database.close()
-    app.run(host='0.0.0.0')
+    app.run(debug=True)
 
 if __name__ == '__main__':
     main()
