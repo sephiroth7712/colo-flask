@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Colosseum 2018</title>
+    <title>Colosseum 2019</title>
     <meta name="description" content="A demo landing page for agencies or product oriented businesses built using Shards, a free, modern and lightweight UI toolkit based on Bootstrap 4.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -48,6 +48,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('index') }}#Sponsors">Sponsors</a>
                         </li>
+			<li class="nav-item">
+			    <a class="nav-link" href="{{ url_for('survey') }}">Survey</a>
+			</li>
                         {% if session.logged_in %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('create') }}">Create Entry</a>
@@ -87,7 +90,7 @@
     {% block content %}{% endblock %}
     <hr>
     <footer class="main-footer py-5">
-        <p class="text-muted text-center small p-0 mb-4">&copy; Copyright 2018 — Colosseum Festival<br>contact@colosseumfest.com</p>
+        <p class="text-muted text-center small p-0 mb-4">&copy; Copyright 2019 — Colosseum Festival<br>contact@colosseumfest.com</p>
         <div class="social d-table ml-auto mr-auto">
             <a class="twitter mx-3 h4" href="https://www.instagram.com/dbitofficial" target="_blank">
                     <i class="fa fa-instagram"></i>
@@ -109,7 +112,7 @@
         crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
         crossorigin="anonymous"></script>
-
+        {% block inject_footer %}{% endblock %}
 </body>
 
 </html>

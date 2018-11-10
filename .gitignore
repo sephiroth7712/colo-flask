@@ -1,1 +1,4 @@
 .vscode/
+/blog.db
+/venv/
+*.pyc
